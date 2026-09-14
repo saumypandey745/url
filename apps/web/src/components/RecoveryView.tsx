@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { RotateCcw, CheckCircle2, ShieldCheck, AlertCircle, Lock, ArrowRight } from 'lucide-react';
+import { RotateCcw, CheckCircle2, ShieldCheck, AlertCircle, Lock, ArrowRight, ShieldAlert, FileText, Check } from 'lucide-react';
 
 export const RecoveryView: React.FC = () => {
   const [activeStep, setActiveStep] = useState(1);
+  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
 
   const recoverySteps = [
     { id: 1, title: 'Verify Ownership & Authorization', desc: 'Confirm DNS TXT or file verification token before initiating recovery workflow.' },
@@ -20,82 +21,108 @@ export const RecoveryView: React.FC = () => {
     { id: 13, title: 'Generate Incident Report', desc: 'Export executive PDF report with timeline, containment steps, and audit log.' }
   ];
 
+  const markCompletedAndNext = () => {
+    if (!completedSteps.includes(activeStep)) {
+      setCompletedSteps([...completedSteps, activeStep]);
+    }
+    if (activeStep < 13) {
+      setActiveStep(activeStep + 1);
+    }
+  };
+
   return (
     <div className="space-y-6">
-      <div className="bg-[#111827] p-5 rounded-xl border border-[#1F2937] flex justify-between items-center">
+      {/* Header Banner */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 glass-panel p-6 rounded-2xl border border-blue-500/20">
         <div>
-          <h2 className="text-xl font-bold text-white">13-Step Guided Incident Recovery Assistant</h2>
-          <p className="text-xs text-gray-400">Authorized step-by-step remediation, containment, and recovery workflow</p>
+          <div className="flex items-center space-x-2 text-cyan-400 font-mono text-xs mb-1">
+            <RotateCcw className="w-4 h-4 animate-spin" style={{ animationDuration: '12s' }} />
+            <span>AUTHORIZED INCIDENT RESPONSE & CONTAINMENT</span>
+          </div>
+          <h2 className="text-xl font-bold text-white tracking-tight">13-Step Guided Website Recovery Assistant</h2>
+          <p className="text-xs text-gray-400 mt-1">Step-by-step remediation, token revocation, snapshotting, and rescan verification</p>
         </div>
-        <span className="px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-full text-xs font-mono">
-          STEP {activeStep} OF 13
-        </span>
+
+        <div className="flex items-center space-x-3">
+          <span className="px-3.5 py-1.5 bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 rounded-xl text-xs font-mono font-bold">
+            STEP {activeStep} OF 13 IN PROGRESS
+          </span>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Step List */}
-        <div className="bg-[#111827] rounded-xl border border-[#1F2937] p-4 space-y-2 max-h-[600px] overflow-y-auto">
+        {/* Step Progress Sidebar */}
+        <div className="glass-panel rounded-2xl border border-blue-900/30 p-4 space-y-2 max-h-[640px] overflow-y-auto">
+          <div className="text-[10px] font-mono uppercase tracking-widest text-gray-400 font-semibold px-2 py-1">
+            RECOVERY STEPS PROGRESS
+          </div>
           {recoverySteps.map((s) => {
-            const isDone = s.id < activeStep;
+            const isDone = completedSteps.includes(s.id);
             const isCurrent = s.id === activeStep;
             return (
               <button
                 key={s.id}
                 onClick={() => setActiveStep(s.id)}
-                className={`w-full text-left p-3 rounded-lg border text-xs flex items-center justify-between transition ${
+                className={`w-full text-left p-3 rounded-xl border text-xs flex items-center justify-between transition-all ${
                   isCurrent
-                    ? 'bg-blue-600/20 border-blue-500 text-white font-semibold'
+                    ? 'bg-gradient-to-r from-blue-600/30 to-cyan-500/10 border-blue-500/60 text-white font-semibold shadow-lg shadow-blue-500/10'
                     : isDone
-                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-                    : 'bg-[#0B0F19] border-[#1F2937] text-gray-400 hover:text-gray-200'
+                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
+                    : 'bg-[#070A12] border-gray-800 text-gray-400 hover:text-gray-200'
                 }`}
               >
                 <div className="flex items-center space-x-3">
-                  <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                  <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-mono font-bold ${
                     isDone ? 'bg-emerald-500 text-black' : isCurrent ? 'bg-blue-500 text-white' : 'bg-gray-800 text-gray-400'
                   }`}>
                     {s.id}
                   </span>
-                  <span className="truncate">{s.title}</span>
+                  <span className="truncate max-w-[170px]">{s.title}</span>
                 </div>
-                {isDone && <CheckCircle2 className="w-4 h-4 text-emerald-400" />}
+                {isDone && <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />}
               </button>
             );
           })}
         </div>
 
-        {/* Action Panel */}
-        <div className="lg:col-span-2 bg-[#111827] rounded-xl border border-[#1F2937] p-6 flex flex-col justify-between space-y-6">
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2 text-blue-400 text-xs font-mono">
-              <RotateCcw className="w-4 h-4" />
-              <span>STEP {activeStep} GUIDANCE</span>
+        {/* Step Action Console */}
+        <div className="lg:col-span-2 glass-panel rounded-2xl border border-blue-900/30 p-6 flex flex-col justify-between space-y-6">
+          <div className="space-y-5">
+            <div className="flex items-center space-x-2 text-cyan-400 text-xs font-mono">
+              <ShieldAlert className="w-4 h-4" />
+              <span>STEP {activeStep} OPERATIONAL GUIDANCE</span>
             </div>
 
-            <h3 className="text-lg font-bold text-white">{recoverySteps[activeStep - 1].title}</h3>
-            <p className="text-xs text-gray-300 bg-[#0B0F19] p-4 rounded border border-[#1F2937] leading-relaxed">
-              {recoverySteps[activeStep - 1].desc}
-            </p>
+            <h3 className="text-xl font-bold text-white tracking-tight">{recoverySteps[activeStep - 1].title}</h3>
 
-            <div className="bg-amber-500/10 border border-amber-500/30 p-3 rounded text-amber-400 text-xs flex items-start space-x-2">
-              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-              <span>All recovery actions log append-only events and require explicit admin verification.</span>
+            <div className="bg-[#070A12] p-5 rounded-xl border border-gray-800 space-y-3 leading-relaxed text-xs text-gray-300">
+              <span className="text-cyan-400 font-mono text-[11px] font-semibold block">ACTION DESCRIPTION:</span>
+              <p>{recoverySteps[activeStep - 1].desc}</p>
+            </div>
+
+            <div className="bg-amber-500/10 border border-amber-500/30 p-4 rounded-xl text-amber-300 text-xs flex items-start space-x-3">
+              <AlertCircle className="w-5 h-5 shrink-0 text-amber-400 mt-0.5" />
+              <div>
+                <strong className="block font-mono text-amber-400 mb-0.5">EXPLICIT ADMIN AUTHORIZATION ENFORCED:</strong>
+                <span>Every destructive recovery action logs an append-only audit event and requires explicit ownership verification.</span>
+              </div>
             </div>
           </div>
 
-          <div className="flex justify-between items-center pt-4 border-t border-[#1F2937]">
+          <div className="flex justify-between items-center pt-5 border-t border-gray-800/80">
             <button
               disabled={activeStep === 1}
               onClick={() => setActiveStep((prev) => Math.max(1, prev - 1))}
-              className="px-4 py-2 bg-gray-800 hover:bg-gray-700 disabled:opacity-50 text-gray-300 rounded text-xs"
+              className="px-4 py-2 bg-gray-800 hover:bg-gray-700 disabled:opacity-40 text-gray-300 rounded-xl text-xs font-semibold"
             >
               Previous Step
             </button>
+
             <button
-              onClick={() => setActiveStep((prev) => Math.min(13, prev + 1))}
-              className="flex items-center space-x-2 px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-semibold"
+              onClick={markCompletedAndNext}
+              className="flex items-center space-x-2 px-6 py-2.5 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white rounded-xl text-xs font-bold transition shadow-lg shadow-blue-600/20"
             >
-              <span>{activeStep === 13 ? 'Finish & Export Report' : 'Execute & Next Step'}</span>
+              <span>{activeStep === 13 ? 'Export Post-Incident Report' : 'Confirm Action & Next Step'}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
