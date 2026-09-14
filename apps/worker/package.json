@@ -1,0 +1,23 @@
+{
+  "name": "worker",
+  "version": "1.0.0",
+  "private": true,
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsc -w & nodemon dist/index.js",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@secplatform/scanner-core": "workspace:*",
+    "@secplatform/security": "workspace:*",
+    "@secplatform/types": "workspace:*",
+    "bullmq": "^5.1.0",
+    "dotenv": "^16.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "nodemon": "^3.0.3",
+    "typescript": "^5.3.3"
+  }
+}

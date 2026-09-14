@@ -1,0 +1,172 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String       @id @default(uuid())
+  email        String       @unique
+  name         String
+  passwordHash String
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  memberships  Membership[]
+  auditLogs    AuditLog[]
+}
+
+model Organization {
+  id          String       @id @default(uuid())
+  name        String
+  slug        String       @unique
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  memberships Membership[]
+  assets      Asset[]
+}
+
+model Membership {
+  id             String       @id @default(uuid())
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  role           String       @default("ADMIN") // OWNER, ADMIN, SECURITY_ANALYST, DEVELOPER, VIEWER
+  createdAt      DateTime     @default(now())
+
+  @@unique([userId, organizationId])
+}
+
+model Asset {
+  id                 String              @id @default(uuid())
+  organizationId     String
+  organization       Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  domain             String
+  environment        String              @default("PRODUCTION") // PRODUCTION, STAGING, DEV
+  ownershipStatus    String              @default("UNVERIFIED") // UNVERIFIED, PENDING, VERIFIED, FAILED
+  verificationMethod String?             // DNS_TXT, META_TAG, FILE_UPLOAD
+  verificationToken  String?
+  verificationDate   DateTime?
+  lastScanDate       DateTime?
+  securityScore      Int                 @default(100)
+  riskLevel          String              @default("EXCELLENT")
+  status             String              @default("PENDING_VERIFICATION")
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  verifications      AssetVerification[]
+  scans              Scan[]
+  findings           Finding[]
+  incidents          Incident[]
+  recoveryJobs       RecoveryJob[]
+  auditLogs          AuditLog[]
+}
+
+model AssetVerification {
+  id        String   @id @default(uuid())
+  assetId   String
+  asset     Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  method    String
+  token     String
+  status    String   @default("PENDING")
+  verifiedAt DateTime?
+  createdAt DateTime @default(now())
+}
+
+model Scan {
+  id                    String             @id @default(uuid())
+  assetId               String
+  asset                 Asset              @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  status                String             @default("QUEUED") // QUEUED, RUNNING, COMPLETED, FAILED
+  totalExecutionTimeMs  Int?
+  findingsCount         Int                @default(0)
+  createdAt             DateTime           @default(now())
+  completedAt           DateTime?
+  moduleResults         ScanModuleResult[]
+  findings              Finding[]
+}
+
+model ScanModuleResult {
+  id              String   @id @default(uuid())
+  scanId          String
+  scan            Scan     @relation(fields: [scanId], references: [id], onDelete: Cascade)
+  moduleName      String
+  success         Boolean
+  error           String?
+  executionTimeMs Int
+  findingsCount   Int      @default(0)
+  createdAt       DateTime @default(now())
+}
+
+model Finding {
+  id          String   @id @default(uuid())
+  scanId      String
+  scan        Scan     @relation(fields: [scanId], references: [id], onDelete: Cascade)
+  assetId     String
+  asset       Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  title       String
+  category    String   // TLS, HEADERS, COOKIES, CORS, API, FRONTEND, EXPOSURE, INTEGRITY
+  severity    String   // CRITICAL, HIGH, MEDIUM, LOW, INFO
+  status      String   @default("OPEN") // OPEN, ACKNOWLEDGED, IN_PROGRESS, FIXED, FALSE_POSITIVE
+  description String
+  evidence    String   // JSON string
+  impact      String
+  likelihood  String   // HIGH, MEDIUM, LOW
+  riskScore   Int
+  remediation String
+  references  String   // JSON string array
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Incident {
+  id          String          @id @default(uuid())
+  assetId     String
+  asset       Asset           @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  title       String
+  status      String          @default("OPEN") // OPEN, INVESTIGATING, CONTAINED, RECOVERY, VERIFICATION, RESOLVED
+  severity    String          @default("HIGH")
+  summary     String
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  events      IncidentEvent[]
+  recoveryJobs RecoveryJob[]
+}
+
+model IncidentEvent {
+  id          String   @id @default(uuid())
+  incidentId  String
+  incident    Incident @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+  type        String   // DETECTION, EVIDENCE, CONTAINMENT, RECOVERY, VERIFICATION
+  description String
+  createdAt   DateTime @default(now())
+}
+
+model RecoveryJob {
+  id           String   @id @default(uuid())
+  assetId      String
+  asset        Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  incidentId   String?
+  incident     Incident? @relation(fields: [incidentId], references: [id], onDelete: SetNull)
+  currentStep  Int      @default(1) // 1 to 13 steps
+  status       String   @default("IN_PROGRESS") // IN_PROGRESS, VERIFIED, COMPLETED, FAILED
+  details      String?  // JSON state
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model AuditLog {
+  id           String   @id @default(uuid())
+  userId       String?
+  user         User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  assetId      String?
+  asset        Asset?   @relation(fields: [assetId], references: [id], onDelete: SetNull)
+  action       String   // SCAN_STARTED, ASSET_VERIFIED, SESSION_REVOKED, SECRET_ROTATED, etc.
+  targetDomain String?
+  ipAddress    String?
+  userAgent    String?
+  details      String?  // JSON string
+  createdAt    DateTime @default(now())
+}
