@@ -71,8 +71,9 @@ export function App() {
       domain: domain.replace(/^(https?:\/\/)/, '').split('/')[0],
       environment: 'PRODUCTION',
       ownershipStatus: 'UNVERIFIED',
+      verificationMethod: 'DNS_TXT',
       verificationToken: `_aipatriot-verify=${Math.random().toString(36).substring(2, 10)}`,
-      lastScanDate: null,
+      lastScanDate: new Date().toISOString(),
       securityScore: 100,
       riskLevel: 'EXCELLENT',
       status: 'PENDING_VERIFICATION'
