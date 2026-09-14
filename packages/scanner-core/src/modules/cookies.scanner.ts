@@ -23,8 +23,11 @@ export class CookieScanner implements BaseScannerModule {
           { method: 'GET', timeout, headers: { 'User-Agent': 'SecPlatform-SecurityScanner/1.0' } },
           (res) => {
             const rawCookies = res.headers['set-cookie'];
-            if (!rawCookies) resolve([]);
-            resolve(Array.isArray(rawCookies) ? rawCookies : [rawCookies]);
+            if (!rawCookies) return resolve([]);
+            if (Array.isArray(rawCookies)) {
+              return resolve(rawCookies.filter((c): c is string => typeof c === 'string'));
+            }
+            return resolve([rawCookies]);
           }
         );
         req.on('error', () => resolve([]));

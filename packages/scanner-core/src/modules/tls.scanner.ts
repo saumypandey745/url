@@ -41,15 +41,18 @@ export class TLSScanner implements BaseScannerModule {
             (res) => {
               const cert = (res.socket as tls.TLSSocket).getPeerCertificate();
               if (cert && Object.keys(cert).length > 0) {
-                const validTo = new Date(cert.validTo);
+                const validToStr = (cert as any).validTo || (cert as any).valid_to || '';
+                const validTo = validToStr ? new Date(validToStr) : new Date();
                 const now = new Date();
                 const diffMs = validTo.getTime() - now.getTime();
                 const daysRemaining = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+                const issuerRaw = cert.issuer ? (cert.issuer.O || cert.issuer.CN) : undefined;
+                const issuer = Array.isArray(issuerRaw) ? issuerRaw[0] : issuerRaw;
                 resolve({
                   valid: daysRemaining > 0,
-                  validTo: cert.validTo,
+                  validTo: validToStr,
                   daysRemaining,
-                  issuer: cert.issuer?.O || cert.issuer?.CN
+                  issuer
                 });
               } else {
                 resolve({ valid: false });
