@@ -71,6 +71,6 @@ databases:
   # 5. PostgreSQL Database
   - name: secplatform-db
     databaseName: secplatform
-        user: secplatform
+    user: secplatform
     region: singapore
     plan: free
