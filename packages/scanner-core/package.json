@@ -7,8 +7,8 @@
     "build": "tsc"
   },
   "dependencies": {
-    "@secplatform/security": "workspace:*",
-    "@secplatform/types": "workspace:*"
+    "@secplatform/security": "1.0.0",
+    "@secplatform/types": "1.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
