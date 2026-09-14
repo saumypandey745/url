@@ -12,6 +12,8 @@ import { AuditLogsView } from './components/AuditLogsView';
 
 export function App() {
   const [currentTab, setCurrentTab] = useState('dashboard');
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   const [assets, setAssets] = useState([
     {
       id: 'asset-demo-001',
@@ -96,25 +98,35 @@ export function App() {
     );
   };
 
-  const handleRunScan = (assetId: string) => {
+  const handleDeleteAsset = (assetId: string) => {
+    setAssets(assets.filter((a) => a.id !== assetId));
+  };
+
+  const handleRunScan = (assetId?: string) => {
     setCurrentTab('findings');
   };
 
   return (
-    <div className="flex min-h-screen bg-[#070A12] text-gray-100 selection:bg-blue-600/40 selection:text-blue-200 font-sans">
+    <div className="flex min-h-screen bg-[#070A12] text-slate-100 selection:bg-cyan-500/30 selection:text-cyan-200 font-sans">
       {/* Sidebar Navigation */}
       <Sidebar
         currentTab={currentTab}
         setCurrentTab={setCurrentTab}
         openFindingsCount={findings.length}
+        mobileOpen={mobileOpen}
+        setMobileOpen={setMobileOpen}
       />
 
       {/* Main SOC Console Body */}
-      <main className="flex-1 p-6 md:p-8 overflow-y-auto max-w-7xl mx-auto space-y-6">
+      <main className="flex-1 p-4 md:p-8 overflow-y-auto max-w-7xl mx-auto space-y-6">
         {currentTab === 'dashboard' && (
           <DashboardView
             onAddWebsite={() => setCurrentTab('assets')}
             onRunScan={() => setCurrentTab('scans')}
+            assets={assets}
+            findings={findings}
+            onNavigateTab={(tab) => setCurrentTab(tab)}
+            onToggleMobileMenu={() => setMobileOpen(true)}
           />
         )}
         {currentTab === 'assets' && (
@@ -123,6 +135,7 @@ export function App() {
             onAddAsset={handleAddAsset}
             onVerifyAsset={handleVerifyAsset}
             onRunScan={handleRunScan}
+            onDeleteAsset={handleDeleteAsset}
           />
         )}
         {currentTab === 'findings' && <FindingsView findings={findings} />}
@@ -133,14 +146,14 @@ export function App() {
         {currentTab === 'secrets' && <SecretRotationView />}
         {currentTab === 'audit-logs' && <AuditLogsView />}
         {currentTab === 'scans' && (
-          <div className="glass-panel p-8 rounded-2xl border border-blue-900/30 text-center space-y-4">
-            <h3 className="text-lg font-bold text-white uppercase tracking-wider">Security Scans Console</h3>
-            <p className="text-xs text-gray-400 max-w-md mx-auto">
+          <div className="soc-card p-8 rounded-2xl border border-slate-800 text-center space-y-4">
+            <h3 className="text-lg font-bold text-white uppercase tracking-wider font-mono">Security Scans Console</h3>
+            <p className="text-xs text-slate-400 max-w-md mx-auto">
               Master Scanner Engine execution active. 8 modular scanners (TLS, Headers, Cookies, CORS, API, Frontend, Exposure, Integrity) are operational.
             </p>
             <button
               onClick={() => setCurrentTab('findings')}
-              className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white rounded-xl text-xs font-bold transition"
+              className="px-5 py-2.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white rounded-xl text-xs font-bold transition shadow-md"
             >
               View Findings & Evidence
             </button>
