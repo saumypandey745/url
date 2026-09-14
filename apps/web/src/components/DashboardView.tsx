@@ -12,7 +12,10 @@ import {
   Lock,
   Globe,
   Radio,
-  FileText
+  FileText,
+  Layers,
+  Cpu,
+  Eye
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
@@ -40,135 +43,164 @@ interface DashboardViewProps {
 
 export const DashboardView: React.FC<DashboardViewProps> = ({ onAddWebsite, onRunScan }) => {
   return (
-    <div className="space-y-6">
-      {/* Top Banner & Control Console */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-[#0F172A] via-[#111C33] to-[#0A1120] p-6 rounded-2xl border border-blue-500/20 shadow-2xl">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-4 z-10">
-          <div>
-            <div className="flex items-center space-x-2 text-cyan-400 font-mono text-xs mb-1">
+    <div className="space-y-7 perspective-container">
+      {/* 3D Holographic Header Console Banner */}
+      <div className="relative overflow-hidden card-3d p-7 rounded-3xl border border-cyan-500/30 animate-float-3d shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br from-cyan-500/15 via-blue-600/10 to-transparent rounded-full blur-3xl pointer-events-none" />
+        
+        <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-6 z-10">
+          <div className="space-y-2">
+            <div className="flex items-center space-x-2 text-cyan-400 font-mono text-xs tracking-wider">
               <Radio className="w-4 h-4 animate-pulse" />
-              <span>LIVE ATTACK-SURFACE MONITORING ENFORCED</span>
+              <span>3D HOLOGRAPHIC SOC THREAT CONSOLE</span>
+              <span className="px-2 py-0.5 bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 rounded-full text-[9px]">PERSPECTIVE ACTIVE</span>
             </div>
-            <h2 className="text-2xl font-black text-white tracking-tight">Security Posture & SOC Command Console</h2>
-            <p className="text-xs text-gray-400 mt-1 max-w-xl">
-              Authorization-gated vulnerability assessment, SSRF protection shield, and automated incident recovery workflow.
+
+            <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-100 to-blue-300 tracking-tight drop-shadow">
+              Security Posture & 3D Threat Radar
+            </h2>
+
+            <p className="text-xs text-gray-300 max-w-xl leading-relaxed">
+              Multi-layered threat surface monitoring, pre-flight SSRF protection shield, and automated incident recovery orchestration.
             </p>
           </div>
 
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-3.5">
             <button
               onClick={onAddWebsite}
-              className="flex items-center space-x-2 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white rounded-xl text-xs font-bold transition-all transform hover:-translate-y-0.5 shadow-lg shadow-blue-600/25"
+              className="flex items-center space-x-2 px-5 py-3 bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-500 hover:from-blue-500 hover:to-teal-400 text-white rounded-2xl text-xs font-extrabold transition-all transform hover:scale-105 glow-cyan-3d"
             >
               <PlusCircle className="w-4 h-4" />
-              <span>Add Target Website</span>
+              <span>Add Target Asset</span>
             </button>
             <button
               onClick={onRunScan}
-              className="flex items-center space-x-2 px-4 py-2.5 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/30 rounded-xl text-xs font-bold transition-all transform hover:-translate-y-0.5 shadow-lg shadow-emerald-500/10"
+              className="flex items-center space-x-2 px-5 py-3 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/40 rounded-2xl text-xs font-extrabold transition-all transform hover:scale-105 glow-emerald-3d"
             >
-              <Radar className="w-4 h-4 animate-spin" style={{ animationDuration: '10s' }} />
-              <span>Trigger Security Scan</span>
+              <Radar className="w-4 h-4 animate-radar text-emerald-400" />
+              <span>Trigger Scan</span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* Metric Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-        {/* Security Score Card */}
-        <div className="glass-panel glass-panel-hover p-5 rounded-2xl relative overflow-hidden">
-          <div className="flex items-center justify-between text-gray-400 text-xs mb-3">
-            <span className="font-mono tracking-wider font-semibold">SECURITY SCORE</span>
-            <div className="p-1.5 bg-emerald-500/10 rounded-lg border border-emerald-500/30">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+      {/* 3D Elevated Metric Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* 3D Security Score Card with Holographic Gauge Ring */}
+        <div className="card-3d p-6 rounded-3xl relative overflow-hidden flex flex-col justify-between">
+          <div className="flex items-center justify-between text-gray-400 text-xs mb-2">
+            <span className="font-mono tracking-wider font-bold">SECURITY SCORE</span>
+            <div className="p-2 bg-emerald-500/15 rounded-xl border border-emerald-500/40 glow-emerald">
+              <ShieldCheck className="w-5 h-5 text-emerald-400" />
             </div>
           </div>
-          <div className="flex items-baseline space-x-2">
-            <span className="text-4xl font-black text-white tracking-tight">88</span>
-            <span className="text-xs font-mono text-gray-400">/ 100</span>
+
+          <div className="flex items-center justify-between my-2">
+            <div>
+              <div className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white to-emerald-300 tracking-tight">
+                88
+              </div>
+              <span className="text-[11px] font-mono text-gray-400">Out of 100 benchmark</span>
+            </div>
+
+            {/* 3D Holographic Gauge Ring Graphic */}
+            <div className="relative w-16 h-16 flex items-center justify-center">
+              <div className="absolute inset-0 rounded-full border-4 border-emerald-500/20" />
+              <div className="absolute inset-0 rounded-full border-4 border-emerald-400 border-t-transparent animate-spin-slow" />
+              <ShieldCheck className="w-6 h-6 text-emerald-400" />
+            </div>
           </div>
-          <div className="mt-3 flex items-center justify-between">
-            <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md text-[10px] font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+
+          <div className="flex items-center justify-between pt-3 border-t border-gray-800/80">
+            <span className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
               <ArrowUpRight className="w-3 h-3" />
-              <span>+23 pts this week</span>
+              <span>+23 PTS RECOVERY</span>
             </span>
-            <span className="text-[10px] font-mono text-gray-400">Rating: GOOD</span>
+            <span className="text-[10px] font-mono text-emerald-400 font-bold">RATING: GOOD</span>
           </div>
         </div>
 
-        {/* Critical Vulnerabilities Card */}
-        <div className="glass-panel glass-panel-hover p-5 rounded-2xl relative overflow-hidden">
-          <div className="flex items-center justify-between text-gray-400 text-xs mb-3">
-            <span className="font-mono tracking-wider font-semibold">CRITICAL FINDINGS</span>
-            <div className="p-1.5 bg-red-500/10 rounded-lg border border-red-500/30">
-              <ShieldAlert className="w-4 h-4 text-red-400" />
+        {/* 3D Critical Vulnerabilities Card */}
+        <div className="card-3d p-6 rounded-3xl relative overflow-hidden flex flex-col justify-between glow-danger-3d">
+          <div className="flex items-center justify-between text-gray-400 text-xs mb-2">
+            <span className="font-mono tracking-wider font-bold">CRITICAL FINDINGS</span>
+            <div className="p-2 bg-red-500/15 rounded-xl border border-red-500/40">
+              <ShieldAlert className="w-5 h-5 text-red-400" />
             </div>
           </div>
-          <div className="flex items-baseline space-x-2">
-            <span className="text-4xl font-black text-red-400 tracking-tight">1</span>
-            <span className="text-xs font-mono text-gray-400">Open Action</span>
+
+          <div className="my-2">
+            <div className="text-5xl font-black text-red-400 tracking-tight">1</div>
+            <p className="text-[11px] font-mono text-gray-400 mt-1">Missing Content-Security-Policy</p>
           </div>
-          <div className="mt-3 flex items-center justify-between">
-            <span className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-red-500/20 text-red-300 border border-red-500/40 animate-pulse">
-              ACTION REQUIRED
+
+          <div className="flex items-center justify-between pt-3 border-t border-gray-800/80">
+            <span className="px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold bg-red-500/20 text-red-300 border border-red-500/40 animate-pulse">
+              REMEDIATION REQUIRED
             </span>
-            <span className="text-[10px] font-mono text-gray-400">1 CSP Missing</span>
+            <span className="text-[10px] font-mono text-red-400">-15 Pts Impact</span>
           </div>
         </div>
 
-        {/* Verified Assets Card */}
-        <div className="glass-panel glass-panel-hover p-5 rounded-2xl relative overflow-hidden">
-          <div className="flex items-center justify-between text-gray-400 text-xs mb-3">
-            <span className="font-mono tracking-wider font-semibold">VERIFIED ASSETS</span>
-            <div className="p-1.5 bg-blue-500/10 rounded-lg border border-blue-500/30">
-              <Server className="w-4 h-4 text-cyan-400" />
+        {/* 3D Verified Assets Card */}
+        <div className="card-3d p-6 rounded-3xl relative overflow-hidden flex flex-col justify-between glow-cyan-3d">
+          <div className="flex items-center justify-between text-gray-400 text-xs mb-2">
+            <span className="font-mono tracking-wider font-bold">VERIFIED ASSETS</span>
+            <div className="p-2 bg-cyan-500/15 rounded-xl border border-cyan-500/40">
+              <Server className="w-5 h-5 text-cyan-400" />
             </div>
           </div>
-          <div className="flex items-baseline space-x-2">
-            <span className="text-4xl font-black text-white tracking-tight">1</span>
-            <span className="text-xs font-mono text-gray-400">Target</span>
+
+          <div className="my-2">
+            <div className="text-5xl font-black text-white tracking-tight">1</div>
+            <p className="text-[11px] font-mono text-cyan-300 mt-1">example.com (Production)</p>
           </div>
-          <div className="mt-3 flex items-center justify-between">
-            <span className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-blue-500/20 text-cyan-300 border border-blue-500/40">
-              example.com
+
+          <div className="flex items-center justify-between pt-3 border-t border-gray-800/80">
+            <span className="px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
+              DNS TXT VERIFIED
             </span>
-            <span className="text-[10px] font-mono text-emerald-400">DNS Verified</span>
+            <span className="text-[10px] font-mono text-emerald-400">AUTH SAFE</span>
           </div>
         </div>
 
-        {/* Incident Status Card */}
-        <div className="glass-panel glass-panel-hover p-5 rounded-2xl relative overflow-hidden">
-          <div className="flex items-center justify-between text-gray-400 text-xs mb-3">
-            <span className="font-mono tracking-wider font-semibold">INCIDENT POSTURE</span>
-            <div className="p-1.5 bg-emerald-500/10 rounded-lg border border-emerald-500/30">
-              <Activity className="w-4 h-4 text-emerald-400" />
+        {/* 3D Incident Posture Card */}
+        <div className="card-3d p-6 rounded-3xl relative overflow-hidden flex flex-col justify-between glow-emerald-3d">
+          <div className="flex items-center justify-between text-gray-400 text-xs mb-2">
+            <span className="font-mono tracking-wider font-bold">INCIDENT POSTURE</span>
+            <div className="p-2 bg-emerald-500/15 rounded-xl border border-emerald-500/40">
+              <Activity className="w-5 h-5 text-emerald-400" />
             </div>
           </div>
-          <div className="flex items-baseline space-x-2">
-            <span className="text-3xl font-black text-emerald-400 tracking-tight">HEALTHY</span>
+
+          <div className="my-2">
+            <div className="text-3xl font-black text-emerald-400 tracking-tight">HEALTHY</div>
+            <p className="text-[11px] font-mono text-gray-400 mt-1">Zero Backdoor Signatures</p>
           </div>
-          <div className="mt-3 flex items-center justify-between">
-            <span className="px-2 py-0.5 rounded-md text-[10px] font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-              ZERO COMPROMISE
+
+          <div className="flex items-center justify-between pt-3 border-t border-gray-800/80">
+            <span className="px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+              BASELINE SAFE
             </span>
-            <span className="text-[10px] font-mono text-gray-400">Safe Baseline</span>
+            <span className="text-[10px] font-mono text-gray-400">100% Intact</span>
           </div>
         </div>
       </div>
 
-      {/* Main Charts & Radar Section */}
+      {/* 3D Layered Charts & Visualizations Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Security Score History Chart */}
-        <div className="lg:col-span-2 glass-panel p-6 rounded-2xl space-y-4">
+        {/* 3D Security Score History Trend Chart */}
+        <div className="lg:col-span-2 card-3d p-7 rounded-3xl space-y-5">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-base font-bold text-white">Security Score Trend History</h3>
-              <p className="text-xs text-gray-400">Post-remediation security posture improvement over the last 7 days</p>
+              <div className="flex items-center space-x-2 text-cyan-400 font-mono text-xs mb-1">
+                <Layers className="w-4 h-4" />
+                <span>3D TIME-SERIES POSTURE ANALYTICS</span>
+              </div>
+              <h3 className="text-lg font-bold text-white">Security Score Improvement Trend</h3>
             </div>
-            <span className="px-2.5 py-1 bg-blue-500/10 text-cyan-400 border border-blue-500/30 rounded-lg text-xs font-mono">
-              +23 PTS RECOVERY
+            <span className="px-3 py-1 bg-cyan-500/15 text-cyan-300 border border-cyan-500/40 rounded-xl text-xs font-mono font-bold">
+              7-DAY BENCHMARK
             </span>
           </div>
 
@@ -177,49 +209,54 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onAddWebsite, onRu
               <AreaChart data={trendData}>
                 <defs>
                   <linearGradient id="scoreColor" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#06B6D4" stopOpacity={0.4}/>
+                    <stop offset="5%" stopColor="#06B6D4" stopOpacity={0.5}/>
                     <stop offset="95%" stopColor="#3B82F6" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
                 <XAxis dataKey="day" stroke="#4B5563" fontSize={11} tickLine={false} />
                 <YAxis stroke="#4B5563" fontSize={11} domain={[0, 100]} tickLine={false} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#0F172A', borderColor: '#1E293B', borderRadius: '12px', color: '#FFF' }}
+                  contentStyle={{ backgroundColor: '#090D18', borderColor: '#1E293B', borderRadius: '16px', color: '#FFF' }}
                 />
-                <Area type="monotone" dataKey="score" stroke="#06B6D4" strokeWidth={3} fillOpacity={1} fill="url(#scoreColor)" />
+                <Area type="monotone" dataKey="score" stroke="#06B6D4" strokeWidth={3.5} fillOpacity={1} fill="url(#scoreColor)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Severity Breakdown Donut Chart */}
-        <div className="glass-panel p-6 rounded-2xl flex flex-col justify-between space-y-4">
+        {/* 3D Severity Distribution Donut Chart */}
+        <div className="card-3d p-7 rounded-3xl flex flex-col justify-between space-y-4">
           <div>
-            <h3 className="text-base font-bold text-white">Vulnerability Severity Distribution</h3>
-            <p className="text-xs text-gray-400">Active finding categorization across 8 scanner modules</p>
+            <div className="flex items-center space-x-2 text-cyan-400 font-mono text-xs mb-1">
+              <Eye className="w-4 h-4" />
+              <span>MODULE FINDING CATEGORIZATION</span>
+            </div>
+            <h3 className="text-lg font-bold text-white">Severity Breakdown</h3>
           </div>
 
           <div className="h-44 flex items-center justify-center">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie data={severityData} dataKey="value" innerRadius={50} outerRadius={70} paddingAngle={6}>
+                <Pie data={severityData} dataKey="value" innerRadius={55} outerRadius={75} paddingAngle={8}>
                   {severityData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#0F172A', borderColor: '#1E293B', borderRadius: '12px', color: '#FFF' }}
+                  contentStyle={{ backgroundColor: '#090D18', borderColor: '#1E293B', borderRadius: '16px', color: '#FFF' }}
                 />
               </PieChart>
             </ResponsiveContainer>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 pt-2 border-t border-gray-800">
+          <div className="grid grid-cols-2 gap-2.5 pt-3 border-t border-gray-800/80">
             {severityData.map((s) => (
-              <div key={s.name} className="flex items-center space-x-2 text-xs">
-                <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: s.color }} />
-                <span className="text-gray-400 font-mono">{s.name}:</span>
-                <span className="text-white font-bold font-mono">{s.value}</span>
+              <div key={s.name} className="flex items-center justify-between text-xs p-2 bg-[#070A12] rounded-xl border border-gray-800">
+                <div className="flex items-center space-x-2">
+                  <span className="w-2.5 h-2.5 rounded-full shadow-sm" style={{ backgroundColor: s.color }} />
+                  <span className="text-gray-300 font-mono">{s.name}</span>
+                </div>
+                <span className="text-white font-black font-mono">{s.value}</span>
               </div>
             ))}
           </div>
